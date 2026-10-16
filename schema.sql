@@ -27,7 +27,7 @@ CREATE TABLE students (
     last_name TEXT NOT NULL,
     grade_level TEXT NOT NULL,
     birth_date DATE NOT NULL,
-    accommodations TEXT,
+    accommodations TEXT NOT NULL,
     last_iep_date DATE,
     next_iep_date DATE
 );

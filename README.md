@@ -12,23 +12,29 @@ A tool for special education teachers that keeps their students' goals, goal tra
 
 ### 1. Start Postgres
 
-```
+```terminal
 brew services start postgresql@17
 ```
 
 ### 2. Load the schema
 
-This drops and recreates all tables, so it also resets the database.
+This drops and recreates all tables, so it also resets the database. Navigate to project folder, then run:
 
-```
+```terminal
 /opt/homebrew/opt/postgresql@17/bin/psql sped_hub -f schema.sql
+```
+
+Then fill the tables with fake test data (run this after every schema load):
+
+```terminal
+/opt/homebrew/opt/postgresql@17/bin/psql sped_hub -f seed.sql
 ```
 
 To look around inside the database, run `/opt/homebrew/opt/postgresql@17/bin/psql sped_hub`. Useful commands there: `\dt` (list tables), `\d tablename` (describe one), `\q` (quit).
 
 ### 3. Start the API
 
-```
+```terminal
 source .venv/bin/activate
 fastapi dev main.py
 ```
@@ -39,7 +45,7 @@ Then open http://127.0.0.1:8000/docs to see the auto-generated API docs.
 
 With the virtual environment active:
 
-```
+```terminal
 python try_db.py
 ```
 
