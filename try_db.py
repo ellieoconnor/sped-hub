@@ -3,7 +3,7 @@
 import psycopg
 
 # connect to an existing database
-with psycopg.connect("dbname=sped_hub") as conn:
+with psycopg.connect("dbname=sped_hub") as conn:  # noqa: SIM117
 
     # Open a cursor to perform database operations
     with conn.cursor() as cur:

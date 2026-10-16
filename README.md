@@ -39,7 +39,7 @@ source .venv/bin/activate
 fastapi dev main.py
 ```
 
-Then open http://127.0.0.1:8000/docs to see the auto-generated API docs.
+Then open <http://127.0.0.1:8000/docs> to see the auto-generated API docs.
 
 ## Checking the database connection
 
