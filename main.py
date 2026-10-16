@@ -1,6 +1,9 @@
+from datetime import date
+
 import psycopg
 from fastapi import FastAPI, HTTPException
 from psycopg.rows import dict_row
+from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -26,7 +29,7 @@ def list_students():
         rows = conn.execute("SELECT * FROM students WHERE teacher_id = %s", (CURRENT_TEACHER_ID,)).fetchall()
     return rows
 
-# One student (GET /students/{id}). Done when a real id returns that student and a made-up id returns a 404 instead of crashing.
+# One student (GET /students/{id}).
 @app.get("/students/{student_id}")
 def list_one_student(student_id: int):
     with psycopg.connect("dbname=sped_hub", row_factory=dict_row) as conn:
@@ -35,6 +38,22 @@ def list_one_student(student_id: int):
         raise HTTPException(status_code=404, detail="Student not found")
     else:
         return row
+
+# POST Add a student (POST /students). Done when you can add a student from the /docs page, then see it in step 2’s list. This is where you learn parameterized SQL and input validation.
+class Student(BaseModel):
+    first_name: str
+    last_name: str
+    grade_level: str
+    birth_date: date
+    accommodations: str
+    last_iep_date: date | None = None
+    next_iep_date: date | None = None
+
+@app.post("/students")
+def create_one_student(new_student: Student):
+    with psycopg.connect("dbname=sped_hub", row_factory=dict_row) as conn:
+        newRecord = conn.execute("INSERT INTO students (teacher_id, first_name, last_name, grade_level, birth_date, accommodations, last_iep_date, next_iep_date) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING *", (CURRENT_TEACHER_ID, new_student.first_name, new_student.last_name, new_student.grade_level, new_student.birth_date, new_student.accommodations, new_student.last_iep_date, new_student.next_iep_date),).fetchone()
+    return newRecord
 
 
 #TEACHER ENDPOINTS
