@@ -13,9 +13,9 @@
 
 ## 15.10.2026 To-Do List
 
-1. Mock data. A seed.sql file with a couple of teachers, a few students, some goals and some scores. Done when you can re-run it and SELECT * FROM students shows your fake students.
+1. [x] Mock data. A seed.sql file with a couple of teachers, a few students, some goals and some scores. Done when you can re-run it and SELECT \* FROM students shows your fake students.
 2. List students (GET /students). Done when opening the URL in your browser shows your seed students as JSON.
-One student (GET /students/{id}). Done when a real id returns that student and a made-up id returns a 404 instead of crashing.
+   One student (GET /students/{id}). Done when a real id returns that student and a made-up id returns a 404 instead of crashing.
 3. Add a student (POST /students). Done when you can add a student from the /docs page, then see it in step 2’s list. This is where you learn parameterized SQL and input validation.
 4. Edit and delete (PATCH, DELETE). Done when you can do all four actions on students from /docs. That’s full “CRUD”, a word interviewers use a lot.
 5. Same pattern for goals, then scores. Done when you can give a seed student a goal and log three scores against it, all from /docs. This repeats steps 2 to 5, so it goes faster and shows you really learned the pattern.
