@@ -64,10 +64,24 @@ def delete_one_student(student_id: int):
     else:
         return
 
-#@app.patch("/students/{student_id}")
-#def update_one_student(student_id: int):
-#    with psycopg.connect("dbname=sped_hub", row_factory=dict_row) as conn:
-#        student_record = conn.execute("UPDATE students SET ")
+class StudentUpdate(BaseModel):
+    first_name: str | None = None
+    last_name: str | None = None
+    grade_level: str | None = None
+    birth_date: date | None = None
+    accommodations: str | None = None
+    last_iep_date: date | None = None
+    next_iep_date: date | None = None
+
+# TODO EO: refactor to update only the fields sent (option B), so a date can be cleared back to empty
+@app.patch("/students/{student_id}")
+def update_one_student(student_id: int, changes: StudentUpdate):
+    with psycopg.connect("dbname=sped_hub", row_factory=dict_row) as conn:
+        update_student = conn.execute("UPDATE students SET first_name = COALESCE(%s, first_name), last_name = COALESCE(%s, last_name), grade_level = COALESCE(%s, grade_level), birth_date = COALESCE(%s, birth_date), accommodations = COALESCE(%s, accommodations), last_iep_date = COALESCE(%s, last_iep_date), next_iep_date = COALESCE(%s, next_iep_date) WHERE student_id = %s AND teacher_id = %s RETURNING *", (changes.first_name, changes.last_name, changes.grade_level, changes.birth_date, changes.accommodations, changes.last_iep_date, changes.next_iep_date, student_id, CURRENT_TEACHER_ID), ).fetchone()
+        if not update_student:
+            raise HTTPException(status_code=404, detail="Student not found.")
+        else:
+            return update_student
 
 
 
