@@ -55,6 +55,21 @@ def create_one_student(new_student: Student):
         newRecord = conn.execute("INSERT INTO students (teacher_id, first_name, last_name, grade_level, birth_date, accommodations, last_iep_date, next_iep_date) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING *", (CURRENT_TEACHER_ID, new_student.first_name, new_student.last_name, new_student.grade_level, new_student.birth_date, new_student.accommodations, new_student.last_iep_date, new_student.next_iep_date),).fetchone()
     return newRecord
 
+@app.delete("/students/{student_id}", status_code=204)
+def delete_one_student(student_id: int):
+    with psycopg.connect("dbname=sped_hub", row_factory=dict_row) as conn:
+        record = conn.execute("DELETE FROM students WHERE student_id = %s AND teacher_id = %s RETURNING student_id", (student_id, CURRENT_TEACHER_ID),).fetchone()
+    if not record:
+        raise HTTPException(status_code=404, detail="Student not found")
+    else:
+        return
+
+#@app.patch("/students/{student_id}")
+#def update_one_student(student_id: int):
+#    with psycopg.connect("dbname=sped_hub", row_factory=dict_row) as conn:
+#        student_record = conn.execute("UPDATE students SET ")
+
+
 
 #TEACHER ENDPOINTS
 
