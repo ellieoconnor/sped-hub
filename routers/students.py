@@ -2,14 +2,10 @@ import psycopg
 from fastapi import APIRouter, HTTPException
 from psycopg.rows import dict_row
 
+from config import CURRENT_TEACHER_ID
 from models import StudentCreate, StudentUpdate
 
 router = APIRouter(prefix="/students", tags=["students"])
-
-# Current teacher id
-CURRENT_TEACHER_ID = 2
-
-# STUDENT ENDPOINTS
 
 # GET all students for a teacher
 # TODO EO: Where will the teacher id come from? need dynamic teacher id; When login exists, the server reads the logged-in teacher's id from their session cookie. It shouldn't come from the URL bc then anyone could type another number and see someone else's students. (answers the question: how do you stop one teacher from seeing another teacher's students?)

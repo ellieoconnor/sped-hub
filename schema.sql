@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS scores;
 DROP TABLE IF EXISTS student_goals;
 DROP TABLE IF EXISTS goal_bank;
 DROP TABLE IF EXISTS student_disabilities;
-DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS goal_categories;
 DROP TABLE IF EXISTS students;
 DROP TABLE IF EXISTS teachers;
 DROP TABLE IF EXISTS disabilities;
@@ -32,10 +32,10 @@ CREATE TABLE students (
     next_iep_date DATE
 );
 
-CREATE TABLE categories (
+CREATE TABLE goal_categories (
     category_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    area TEXT NOT NULL,
-    subarea TEXT
+    domain TEXT NOT NULL,
+    skill TEXT
 );
 
 CREATE TABLE student_disabilities (
@@ -48,7 +48,7 @@ CREATE TABLE student_disabilities (
 CREATE TABLE goal_bank (
     goal_bank_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     teacher_id INTEGER REFERENCES teachers (teacher_id),
-    category_id INTEGER NOT NULL REFERENCES categories (category_id),
+    category_id INTEGER NOT NULL REFERENCES goal_categories (category_id),
     goal_text TEXT NOT NULL,
     is_stock BOOLEAN NOT NULL
 );
@@ -56,7 +56,7 @@ CREATE TABLE goal_bank (
 CREATE TABLE student_goals (
     goal_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     student_id INTEGER NOT NULL REFERENCES students (student_id),
-    category_id INTEGER NOT NULL REFERENCES categories (category_id),
+    category_id INTEGER NOT NULL REFERENCES goal_categories (category_id),
     goal_text TEXT NOT NULL,
     baseline_value NUMERIC,
     baseline_notes TEXT,
