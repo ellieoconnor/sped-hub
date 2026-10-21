@@ -19,5 +19,8 @@
 4. [x] Add a student (POST /students). Done when you can add a student from the /docs page, then see it in step 2’s list. This is where you learn parameterized SQL and input validation.
 5. [x] Edit and delete (PATCH, DELETE). Done when you can do all four actions on students from /docs. That’s full “CRUD”, a word interviewers use a lot.
 6. Same pattern for goals, then scores. Done when you can give a seed student a goal and log three scores against it, all from /docs. This repeats steps 2 to 5, so it goes faster and shows you really learned the pattern.
+   1. Seed goal categories and goals (3 goals loaded)
+   2. GET /students/{id}/goals (ownership check through the student)
+   3. Seed scores and build score endpoints
 7. Lookups (GET /categories, goal bank). Done when the dropdown data is there for the frontend to use.
 8. Tidy up. Put the database connection in one shared place and add a few automated tests. Done when the tests pass with one command.
