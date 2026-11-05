@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from routers import students
+from routers import goals, students
 
 app = FastAPI()
 
@@ -9,4 +9,7 @@ app = FastAPI()
 def read_root():
     return {"message": "hello"}
 
+# Student endpoints
 app.include_router(students.router)
+# Goals endpoints
+app.include_router(goals.router)
