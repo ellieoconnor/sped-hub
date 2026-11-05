@@ -8,16 +8,22 @@ from models import GoalCreate, GoalUpdate
 router = APIRouter(tags=["goals"])
 
 # GET all of one student's goals
-@router.get("students/{student_id}/goals")
+@router.get("/students/{student_id}/goals")
 def list_student_goals(student_id: int):
-    # check the student belongs to the current teacher
     with psycopg.connect("dbname=sped_hub", row_factory=dict_row) as conn:
-        student = conn.execute("SELECT * FROM students WHERE teacher_id = %s AND student_id = %s", (CURRENT_TEACHER_ID, student_id),).fetchone()
+        # check the student belongs to the current teacher
+        student = conn.execute(
+            "SELECT * FROM students WHERE teacher_id = %s AND student_id = %s",
+            (CURRENT_TEACHER_ID, student_id),
+        ).fetchone()
+        if not student:
+            raise HTTPException(status_code=404, detail="Student not found")
 
-    # select the goals where student id matches the selected student
-        goals = conn.execute("SELECT * FROM student_goals WHERE student_id = %s", (student_id,)).fetchall()
-    if not student:
-        raise HTTPException(status_code=404, detail="Student not found")
+        # select the goals where student id matches the selected student
+        goals = conn.execute(
+            "SELECT * FROM student_goals WHERE student_id = %s",
+            (student_id,),
+        ).fetchall()
     return goals
 
 # GET one student goal
@@ -34,11 +40,11 @@ def get_student_goal(goal_id: int):
               AND students.teacher_id = %s
             """,
             (goal_id, CURRENT_TEACHER_ID),
-            ).fetchone()
-        
-        if not goal:
-            raise HTTPException(status_code=404, detail="Goal not found")
-        return goal
+        ).fetchone()
+
+    if not goal:
+        raise HTTPException(status_code=404, detail="Goal not found")
+    return goal
 
 # POST — add a goal to a student
 @router.post("/students/{student_id}/goals", status_code=201)
@@ -47,11 +53,11 @@ def create_student_goal(student_id: int, new_goal: GoalCreate):
         # make sure student exists and is correct
         student = conn.execute(
             "SELECT * FROM students WHERE teacher_id = %s AND student_id = %s",
-            (CURRENT_TEACHER_ID, student_id)
+            (CURRENT_TEACHER_ID, student_id),
         ).fetchone()
         if not student:
             raise HTTPException(status_code=404, detail="Student not found")
-        
+
         goal = conn.execute(
             """
             INSERT INTO student_goals (
@@ -59,11 +65,11 @@ def create_student_goal(student_id: int, new_goal: GoalCreate):
                 category_id,
                 goal_text,
                 baseline_value,
-                baline_notes,
+                baseline_notes,
                 target_value,
                 target_notes,
                 start_date,
-                due_date,
+                due_date
             )
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             RETURNING *
@@ -77,7 +83,7 @@ def create_student_goal(student_id: int, new_goal: GoalCreate):
                 new_goal.target_value,
                 new_goal.target_notes,
                 new_goal.start_date,
-                new_goal.due_date
+                new_goal.due_date,
             ),
         ).fetchone()
     return goal
@@ -98,7 +104,8 @@ def update_goal(goal_id: int, changes: GoalUpdate):
                 target_notes = COALESCE(%s, target_notes),
                 start_date = COALESCE(%s, start_date),
                 due_date = COALESCE(%s, due_date)
-            WHERE goal_id = %s AND student_id IN (SELECT student_id FROM students WHERE teacher_id = %s)
+            WHERE goal_id = %s
+              AND student_id IN (SELECT student_id FROM students WHERE teacher_id = %s)
             RETURNING *
             """,
             (
@@ -111,7 +118,7 @@ def update_goal(goal_id: int, changes: GoalUpdate):
                 changes.start_date,
                 changes.due_date,
                 goal_id,
-                CURRENT_TEACHER_ID
+                CURRENT_TEACHER_ID,
             ),
         ).fetchone()
     if not goal:
@@ -119,4 +126,17 @@ def update_goal(goal_id: int, changes: GoalUpdate):
     return goal
 
 # DELETE — delete one goal
-# /goals/{goal_id}
+@router.delete("/goals/{goal_id}", status_code=204)
+def delete_goal(goal_id: int):
+    with psycopg.connect("dbname=sped_hub", row_factory=dict_row) as conn:
+        goal = conn.execute(
+            """
+            DELETE FROM student_goals
+            WHERE goal_id = %s
+              AND student_id IN (SELECT student_id FROM students WHERE teacher_id = %s)
+            RETURNING goal_id
+            """,
+            (goal_id, CURRENT_TEACHER_ID),
+        ).fetchone()
+    if not goal:
+        raise HTTPException(status_code=404, detail="Goal not found")
