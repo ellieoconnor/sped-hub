@@ -32,3 +32,5 @@
 - Fixed `delete_score` (#8): added the goal_id check, rebuilt the ownership check as a nested subquery (score → goal → student → teacher), matched the values tuple to the placeholders, and removed the extra goal pre-check.
 - Learned: INSERT needs a check first; UPDATE and DELETE can check inside their WHERE.
 - Still open: the route path waits on #5's prefix fix. Other scores endpoints are untested (#4–#7).
+- Finished #4: renamed the scores date column to `score_date` with `DEFAULT CURRENT_DATE`, and seeded 5 scores (3 rising scores on goal 1, a notes-only score on goal 2, 1 on teacher 3's goal 3). Verified in psql with `\d scores` and `SELECT * FROM scores;`.
+- Learned: every insert in a .sql file needs its own `;`, and good seed data follows the goal it belongs to (values sit between baseline and target, dates fall after the IEP).
