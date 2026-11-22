@@ -5,13 +5,27 @@ from psycopg.rows import dict_row
 from config import CURRENT_TEACHER_ID
 from models import ScoreCreate, ScoreUpdate
 
-router = APIRouter(prefix="/goals/{goal_id}/", tags=["scores"])
+router = APIRouter(prefix="/goals/{goal_id}/scores", tags=["scores"])
 
 # GET — list a goals's scores
 # /goals/{goal_id}/scores
 @router.get("")
 def list_scores(goal_id: int):
     with psycopg.connect("dbname=sped_hub", row_factory=dict_row) as conn:
+        goal = conn.execute(
+            """
+            SELECT student_goals.*
+            FROM student_goals
+            JOIN students ON students.student_id = student_goals.student_id
+            WHERE student_goals.goal_id = %s
+            AND students.teacher_id = %s
+            """,
+            (goal_id, CURRENT_TEACHER_ID),
+        ).fetchone()
+
+        if not goal:
+            raise HTTPException(status_code=404, detail="Goal not found")
+        
         scores = conn.execute("SELECT * FROM scores WHERE goal_id = %s", (goal_id,)).fetchall()
     return scores
 
@@ -22,7 +36,7 @@ def get_score(goal_id: int, score_id: int):
     with psycopg.connect("dbname=sped_hub", row_factory=dict_row) as conn:
         score = conn.execute(
             """
-            SELECT * 
+            SELECT scores.* 
             FROM scores 
             JOIN student_goals ON student_goals.goal_id = scores.goal_id
             JOIN students ON students.student_id = student_goals.student_id
@@ -100,7 +114,7 @@ def update_score(score_id: int, changes: ScoreUpdate):
 
 # DELETE — delete a score
 # /goals/{goal_id}/scores/{score_id}
-@router.delete("/scores/{score_id}", status_code=204)
+@router.delete("/{score_id}", status_code=204)
 def delete_score(goal_id: int, score_id: int):
     with psycopg.connect("dbname=sped_hub", row_factory=dict_row) as conn:
         score = conn.execute(
