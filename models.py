@@ -40,3 +40,15 @@ class GoalUpdate(BaseModel):
     target_notes: str | None = None
     start_date: date | None = None
     due_date: date | None = None
+
+class ScoreCreate(BaseModel):
+    goal_id: int
+    score_date: date | None = None
+    value: int
+    notes: str
+
+class ScoreUpdate(BaseModel):
+    goal_id: int | None = None
+    score_date: date | None = None
+    values: int | None = None
+    notes: str | None = None
