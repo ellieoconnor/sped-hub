@@ -85,32 +85,41 @@ def create_a_score(goal_id: int, new_score: ScoreCreate):
 # PATCH — edit a score
 # /goals/{goal_id}/scores/{score_id}
 @router.patch("/{score_id}")
-def update_score(score_id: int, changes: ScoreUpdate):
+def update_score(goal_id: int, score_id: int, changes: ScoreUpdate):
     with psycopg.connect("dbname=sped_hub", row_factory=dict_row) as conn:
         score = conn.execute(
             """
             UPDATE scores
             SET
-                goal_id = COALESCE(%s, goal_id),
                 score_date = COALESCE(%s, score_date),
                 value = COALESCE(%s, value),
                 notes = COALESCE(%s, notes)
-            WHERE score_id = %s
-                AND student_id IN (SELECT student_id FROM students WHERE teacher_id = %s)
+            WHERE scores.score_id = %s
+            AND scores.goal_id = %s
+            AND scores.goal_id IN (
+                SELECT goal_id 
+                    FROM student_goals 
+                    WHERE student_id 
+                    IN (
+                        SELECT student_id 
+                        FROM students 
+                        WHERE teacher_id = %s
+                    )
+                )
             RETURNING *
             """,
             (
-                changes.goal_id,
                 changes.score_date,
-                changes.values,
+                changes.value,
                 changes.notes,
                 score_id,
+                goal_id,
                 CURRENT_TEACHER_ID
             ),
         ).fetchone()
     if not score:
         raise HTTPException(status_code=404, detail="Score not found")
-    raise score
+    return score
 
 # DELETE — delete a score
 # /goals/{goal_id}/scores/{score_id}

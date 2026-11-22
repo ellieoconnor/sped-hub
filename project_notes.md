@@ -21,16 +21,6 @@
 6. Same pattern for goals, then scores. Done when you can give a seed student a goal and log three scores against it, all from /docs. This repeats steps 2 to 5, so it goes faster and shows you really learned the pattern.
    1. [x] Seed goal categories and goals (3 goals loaded)
    2. [x] GET /students/{id}/goals (ownership check through the student)
-   3. Seed scores and build score endpoints
+   3. [x] Seed scores and build score endpoints
 7. Lookups (GET /categories, goal bank). Done when the dropdown data is there for the frontend to use.
 8. Tidy up. Put the database connection in one shared place and add a few automated tests. Done when the tests pass with one command.
-
-
-## Session log
-
-### 22.11.2026
-- Fixed `delete_score` (#8): added the goal_id check, rebuilt the ownership check as a nested subquery (score → goal → student → teacher), matched the values tuple to the placeholders, and removed the extra goal pre-check.
-- Learned: INSERT needs a check first; UPDATE and DELETE can check inside their WHERE.
-- Still open: the route path waits on #5's prefix fix. Other scores endpoints are untested (#4–#7).
-- Finished #4: renamed the scores date column to `score_date` with `DEFAULT CURRENT_DATE`, and seeded 5 scores (3 rising scores on goal 1, a notes-only score on goal 2, 1 on teacher 3's goal 3). Verified in psql with `\d scores` and `SELECT * FROM scores;`.
-- Learned: every insert in a .sql file needs its own `;`, and good seed data follows the goal it belongs to (values sit between baseline and target, dates fall after the IEP).

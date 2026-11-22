@@ -48,7 +48,6 @@ class ScoreCreate(BaseModel):
     notes: str
 
 class ScoreUpdate(BaseModel):
-    goal_id: int | None = None
     score_date: date | None = None
-    values: int | None = None
+    value: int | None = None
     notes: str | None = None

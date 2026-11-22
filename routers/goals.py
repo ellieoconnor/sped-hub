@@ -37,7 +37,7 @@ def get_student_goal(goal_id: int):
             FROM student_goals
             JOIN students ON students.student_id = student_goals.student_id
             WHERE student_goals.goal_id = %s
-              AND students.teacher_id = %s
+            AND students.teacher_id = %s
             """,
             (goal_id, CURRENT_TEACHER_ID),
         ).fetchone()
