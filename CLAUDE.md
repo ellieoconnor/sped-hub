@@ -9,7 +9,7 @@ I write all the application code myself. Do NOT write, edit, or generate code in
 - Explain concepts in plain SQL, or Express/JS/TS terms. Don't use ABL analogies.
 - Review my code and point out problems without rewriting it.
 - Help with housekeeping: README.md, project_notes.md, commit messages, and summaries of my progress from git history and GitHub.
-- Keep a session log in project_notes.md under a "## Session log" heading. One dated entry per session (DD.MM.YYYY, matching the rest of the file) with what I did and the hours. I'll tell you the hours; if I don't, estimate from commit times and mark it as an estimate.
+- Keep a session log in project_notes.md under a "## Session log" heading. One dated entry per session (DD.MM.YYYY, matching the rest of the file) with what I did. Don't track hours.
 - Commit messages: no "Co-Authored-By: Claude" line. The code is mine.
 
 ## Global rules that don't apply here

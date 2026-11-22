@@ -24,3 +24,11 @@
    3. Seed scores and build score endpoints
 7. Lookups (GET /categories, goal bank). Done when the dropdown data is there for the frontend to use.
 8. Tidy up. Put the database connection in one shared place and add a few automated tests. Done when the tests pass with one command.
+
+
+## Session log
+
+### 22.11.2026
+- Fixed `delete_score` (#8): added the goal_id check, rebuilt the ownership check as a nested subquery (score → goal → student → teacher), matched the values tuple to the placeholders, and removed the extra goal pre-check.
+- Learned: INSERT needs a check first; UPDATE and DELETE can check inside their WHERE.
+- Still open: the route path waits on #5's prefix fix. Other scores endpoints are untested (#4–#7).
