@@ -70,7 +70,7 @@ CREATE TABLE student_goals (
 CREATE TABLE scores (
     score_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     goal_id INTEGER NOT NULL REFERENCES student_goals (goal_id),
-    date DATE NOT NULL,
+    score_date DATE DEFAULT CURRENT_DATE NOT NULL,
     value NUMERIC,
     notes TEXT,
     CHECK (value IS NOT NULL OR notes IS NOT NULL)
