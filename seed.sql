@@ -37,3 +37,19 @@ values (1, 3, 'When given a new task, Jeff will start task promptly, remain on t
 
 insert into student_goals (student_id, category_id, goal_text, baseline_value, baseline_notes, target_value, target_notes, start_date, due_date)
 values (3, 2, 'A math computation goal', 40, NULL, 80, NULL, NULL, '2026-12-12');
+
+-- GOAL SCORES SEED DATA
+insert into scores (goal_id, score_date, value, notes)
+values (1, '2026-01-15', 45, NULL);
+
+insert into scores (goal_id, score_date, value, notes)
+values (1, '2026-03-12', 55, NULL);
+
+insert into scores (goal_id, score_date, value, notes)
+values (1, '2026-05-14', 62, NULL);
+
+insert into scores (goal_id, score_date, value, notes)
+values (2, '2026-04-09', NULL, 'Started 3/5 tasks promptly; needed 2 reminders');
+
+insert into scores (goal_id, score_date, value, notes)
+values (3, '2026-04-20', 50, NULL);
