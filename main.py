@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from routers import goals, scores, students
+from routers import categories, goals, scores, students
 
 app = FastAPI()
 
@@ -15,3 +15,5 @@ app.include_router(students.router)
 app.include_router(goals.router)
 # Scores endpoints
 app.include_router(scores.router)
+# Goal Categories endpoints
+app.include_router(categories.router)
