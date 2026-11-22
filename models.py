@@ -42,12 +42,11 @@ class GoalUpdate(BaseModel):
     due_date: date | None = None
 
 class ScoreCreate(BaseModel):
-    goal_id: int
     score_date: date | None = None
-    value: int
-    notes: str
+    value: float | None = None
+    notes: str | None = None
 
 class ScoreUpdate(BaseModel):
     score_date: date | None = None
-    value: int | None = None
+    value: float | None = None
     notes: str | None = None

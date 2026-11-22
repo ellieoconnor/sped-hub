@@ -57,8 +57,15 @@ def create_a_score(goal_id: int, new_score: ScoreCreate):
     with psycopg.connect("dbname=sped_hub", row_factory=dict_row) as conn:
         # make sure the goal exists and is correct
         goal = conn.execute(
-            "SELECT * FROM student_goals WHERE goal_id = %s", (goal_id),
-        ).fetchone()
+                    """
+                    SELECT student_goals.*
+                    FROM student_goals
+                    JOIN students ON students.student_id = student_goals.student_id
+                    WHERE student_goals.goal_id = %s
+                    AND students.teacher_id = %s
+                    """,
+                    (goal_id, CURRENT_TEACHER_ID),
+                ).fetchone()
         if not goal:
             raise HTTPException(status_code=404, detail="Goal not found")
 
@@ -68,9 +75,9 @@ def create_a_score(goal_id: int, new_score: ScoreCreate):
                 goal_id,
                 score_date,
                 value,
-                notes,
+                notes
             )
-            VALUES (%s, %s, %s, %s)
+            VALUES (%s, COALESCE(%s, CURRENT_DATE), %s, %s)
             RETURNING *
             """,
             (
